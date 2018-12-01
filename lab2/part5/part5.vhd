@@ -1,0 +1,59 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+USE ieee.std_logic_signed.all;
+
+ENTITY part5 IS
+	PORT ( 
+		SW : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+		LEDR : OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
+		HEX0 : OUT STD_LOGIC_VECTOR(0 TO 6);
+		HEX1 : OUT STD_LOGIC_VECTOR(0 TO 6);
+		HEX2 : OUT STD_LOGIC_VECTOR(0 TO 6);
+		HEX3 : OUT STD_LOGIC_VECTOR(0 TO 6);
+		LEDG : OUT STD_LOGIC_VECTOR(4 DOWNTO 0));
+
+END part5;
+
+ARCHITECTURE Behavior OF part5 IS
+		COMPONENT display
+		PORT ( 
+			x : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+			y : OUT STD_LOGIC_VECTOR(0 TO 6));
+		END COMPONENT;
+		
+SIGNAL A : STD_LOGIC_VECTOR(3 DOWNTO 0);
+SIGNAL B : STD_LOGIC_VECTOR(3 DOWNTO 0);
+SIGNAL Cin : STD_LOGIC;
+SIGNAL T : STD_LOGIC_VECTOR(4 DOWNTO 0);
+SIGNAL Z : STD_LOGIC_VECTOR(4 DOWNTO 0);
+SIGNAL c : STD_LOGIC;
+SIGNAL temp : STD_LOGIC_VECTOR(4 DOWNTO 0);
+SIGNAL S0 : STD_LOGIC_VECTOR(3 DOWNTO 0);
+SIGNAL S1 : STD_LOGIC_VECTOR(3 DOWNTO 0);
+
+BEGIN
+	LEDR <= SW;
+	Cin <= SW(8);
+	A <= SW(7 DOWNTO 4);
+	B <= SW(3 DOWNTO 0);
+	T <= ('0' & A) + ('0' & B) + Cin;
+	PROCESS(Z, c, T)
+	BEGIN
+		IF T > "01001" OR T(4) = '1' THEN
+			Z <= "01010";
+			c <= '1';
+		ELSE
+			Z <= "00000";
+			c <= '0';
+		END IF;
+	END PROCESS;
+	temp <= T - Z;
+	S0 <= temp(3 DOWNTO 0);
+	S1 <= "000" & c;
+	LEDG(3 DOWNTO 0) <= S0;
+	LEDG(4) <= c;
+	display0: display PORT MAP (S0, HEX0);
+	display1: display PORT MAP (S1, HEX1);
+	display2: display PORT MAP (B, HEX2);
+	display3: display PORT MAP (A, HEX3);
+END Behavior;

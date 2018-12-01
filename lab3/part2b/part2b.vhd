@@ -1,0 +1,15 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+ENTITY part2b IS
+	PORT ( SW: IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+		LEDR : OUT STD_LOGIC_VECTOR(9 DOWNTO 0));
+END part2b;
+
+ARCHITECTURE Structural OF part2b IS
+	COMPONENT part2
+		PORT ( Clk, D : IN STD_LOGIC;
+		Q : OUT STD_LOGIC);
+	END COMPONENT;
+BEGIN
+		s1 : part2 PORT MAP (SW(1), SW(0), LEDR(0));
+END Structural;
